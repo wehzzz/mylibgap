@@ -1,0 +1,8 @@
+Debug/
+Release/
+
+# Eclipse CDT project files
+.cproject
+.project
+.settings/
+.metadata/

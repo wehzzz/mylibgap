@@ -1,0 +1,17 @@
+Membres de l'équipe:
+    - lucas.besnard
+    - martin.levesque
+
+Paliers:
+    - 0 - Mise en place de l'environnement
+    - 1 - Console de contrôle
+    - 2 - Logs par UART
+    - 3 - Support du gyroscope
+    - A - Stockage de la version logicielle
+    - B - Mr Propre
+    - C - Auto-test
+    - D - Le seau déborde
+    - E - Mode veille
+    - F - Clignotants
+    - G - Guide du développeur
+    - X - L'élément de surprise
