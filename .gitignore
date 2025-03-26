@@ -2,7 +2,7 @@ Debug/
 Release/
 
 # Eclipse CDT project files
-.cproject
-.project
-.settings/
+#.cproject
+#.project
+#.settings/
 .metadata/
