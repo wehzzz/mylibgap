@@ -76,22 +76,26 @@ static void UART_RXComplete(UART_HandleTypeDef *huart) {
 	// TinyFrame header received, decode it to extract protocol buffer length
 	if (protobuf_len == -1) {
 		// Extract len
-		//protobuf_len = get_protobuf_len((uint8_t*) &RX_Buffer);
-		protobuf_len = 0;
+		// TODO: not sure if it's working
+		protobuf_len = get_protobuf_len((uint8_t*) RX_Buffer);
+		if (protobuf_len == 0) // No body means no data checksum
+			goto accept;
 
-		communicator->recv(communicator, (uint8_t*) &RX_Buffer,
+		communicator->recv(communicator,
+				(uint8_t*) (RX_Buffer + GAPCOM_TF_HEADER_SIZE_BYTES),
 				protobuf_len + GAPCOM_TF_FOOTER_SIZE_BYTES);
 	}
 	// Protocol buffer and data checksum received
 	else {
+		accept:
 		// Body + Data checksum received, we can call accept
-		gapcom_accept(handle, (uint8_t*) &RX_Buffer,
+		gapcom_accept(handle, (uint8_t*) RX_Buffer,
 				GAPCOM_TF_HEADER_SIZE_BYTES + protobuf_len
 						+ GAPCOM_TF_FOOTER_SIZE_BYTES);
 		protobuf_len = -1;
 
 		// Receive next header
-		communicator->recv(communicator, (uint8_t*) &RX_Buffer,
+		communicator->recv(communicator, (uint8_t*) RX_Buffer,
 				GAPCOM_TF_HEADER_SIZE_BYTES);
 	}
 }
@@ -163,7 +167,7 @@ int main(void) {
 
 	
 	// Receive first header
-	communicator->recv(communicator, (uint8_t*) &RX_Buffer,
+	communicator->recv(communicator, (uint8_t*) RX_Buffer,
 			GAPCOM_TF_HEADER_SIZE_BYTES);
 
 	/* USER CODE END 2 */

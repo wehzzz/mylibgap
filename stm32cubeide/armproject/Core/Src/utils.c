@@ -29,8 +29,8 @@ void flash_red_led() {
 
 size_t get_protobuf_len(const uint8_t *buf) {
 	size_t res = 0;
-	size_t start_idx = TF_USE_SOF_BYTE + TF_ID_BYTES;
-	for (size_t i = 0; i < TF_LEN_BYTES; i++) {
+	int start_idx = TF_USE_SOF_BYTE + TF_ID_BYTES;
+	for (int i = 0; i < TF_LEN_BYTES; i++) {
 		res <<= 8;
 		res |= buf[start_idx + i];
 	}
