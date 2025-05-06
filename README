@@ -2,9 +2,15 @@ Membres de l'équipe:
     - lucas.besnard
     - martin.levesque
 
-Paliers:
+Paliers réalisés:
     - 0 - Mise en place de l'environnement
     - 1 - Console de contrôle
+Utilisation de l'UART 7 en mode interruption. Lecture du given code et plus particulièrement du README.md
+afin de comprendre les étapes nécessaires à la communication avec gapcli. Nous lisons le message envoyé par gapcli
+en 2 temps: lecture du header, extraction de la taille du "body" puis lecture du buffer + footer. Ensuite,
+gapcom_accept se charge du parsing et de l'appel au callback.
+
+Paliers non réalisés:
     - 2 - Logs par UART
     - 3 - Support du gyroscope
     - A - Stockage de la version logicielle
