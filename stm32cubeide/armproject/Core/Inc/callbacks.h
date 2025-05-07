@@ -11,5 +11,6 @@
 #include <gapcom_core.h>
 
 void ping_callback(gapcom_handle_t *handle, const void *proto_msg);
+void set_log_verbosity_callback(gapcom_handle_t *handle, const void *proto_msg);
 
 #endif /* INC_CALLBACKS_H_ */

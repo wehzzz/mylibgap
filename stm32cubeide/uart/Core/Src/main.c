@@ -1,36 +1,27 @@
 /* USER CODE BEGIN Header */
 /**
- ******************************************************************************
- * @file           : main.c
- * @brief          : Main program body
- ******************************************************************************
- * @attention
- *
- * Copyright (c) 2025 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file
- * in the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- *
- ******************************************************************************
- */
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <gapcom/gapcom.h>
-#include <gapcom/gapcom_server.h>
-#include <communicator.h>
-#include <communicator_impl_server.h>
-#include <gap.pb.h>
-#include <gapcom_core.h>
-
-#include "utils.h"
-#include "callbacks.h"
-#include "logger.h"
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,21 +40,15 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-static gapcom_handle_t *handle;
-static communicator_t *communicator;
 
-uint8_t RX_Buffer[GAPCOM_RECVBUF_SIZE];
-static int protobuf_len = -1; // -1 means no header received, else it's the protocol buffer length
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_UART7_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -71,57 +56,12 @@ static void MX_USART1_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static void UART_RXComplete(UART_HandleTypeDef *huart) {
-	if (huart != &huart7) {
-		return;
-	}
-
-	// TinyFrame header received, decode it to extract protocol buffer length
-	if (protobuf_len == -1) {
-		// Extract len
-		// TODO: not sure if it's working
-		protobuf_len = get_protobuf_len((uint8_t*) RX_Buffer);
-		if (protobuf_len == 0) // No body means no data checksum
-			goto accept;
-
-		communicator->recv(communicator,
-				(uint8_t*) (RX_Buffer + GAPCOM_TF_HEADER_SIZE_BYTES),
-				protobuf_len + GAPCOM_TF_FOOTER_SIZE_BYTES);
-	}
-	// Protocol buffer and data checksum received
-	else {
-		accept:
-		// Body + Data checksum received, we can call accept
-		gapcom_accept(handle, (uint8_t*) RX_Buffer,
-				GAPCOM_TF_HEADER_SIZE_BYTES + protobuf_len
-						+ GAPCOM_TF_FOOTER_SIZE_BYTES);
-		protobuf_len = -1;
-
-		// Receive next header
-		communicator->recv(communicator, (uint8_t*) RX_Buffer,
-				GAPCOM_TF_HEADER_SIZE_BYTES);
-	}
+void UART_SendString(char *str) {
+	HAL_UART_Transmit(&huart1, (uint8_t *)str, strlen(str), HAL_MAX_DELAY);
 }
 
-static int register_HAL_UART_Callback() {
-	HAL_StatusTypeDef status;
-
-	// Flash a green LED when a UART7 transmission is complete
-	status = HAL_UART_RegisterCallback(&huart7, HAL_UART_TX_COMPLETE_CB_ID,
-			flash_led_tx_complete);
-	if (status != HAL_OK) {
-		flash_red_led();
-		return 1;
-	}
-
-	// Flash a red LED when a UART7 communication got an error
-	status = HAL_UART_RegisterCallback(&huart7, HAL_UART_ERROR_CB_ID,
-			flash_red_led);
-	if (status != HAL_OK) {
-		flash_red_led();
-		return 1;
-	}
-	return 0;
+void UART_ReceiveString(char *buffer, uint16_t size) {
+    HAL_UART_Receive(&huart1, (uint8_t *)buffer, size, HAL_MAX_DELAY);
 }
 /* USER CODE END 0 */
 
@@ -133,6 +73,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -153,39 +94,27 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_UART7_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
-	// Register basic UART7 callback to flash LED on message transmission
-	register_HAL_UART_Callback();
-	// Register UART7 RX complete callback
-	HAL_UART_RegisterCallback(&huart7, HAL_UART_RX_COMPLETE_CB_ID, UART_RXComplete);
-
-	// Init Gapcom
-	handle = gapcom_create();
-	communicator = communicator_impl_server_get();
-	gapcom_set_sender_impl(handle, (gapcom_sender_t*) communicator);
-
-	// Register Gapcom callback
-	gapcom_install_callback(handle, &ping_callback, GAPCOM_MSG_PING_REQ);
-	gapcom_install_callback(handle, &set_log_verbosity_callback, GAPCOM_MSG_SET_LOG_VERBOSITY_REQ);
-
-	
-	// Receive first header
-	communicator->recv(communicator, (uint8_t*) RX_Buffer,
-			GAPCOM_TF_HEADER_SIZE_BYTES);
-
-	log(LOG_INFO, "GAP system booted");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	while (1) {
+  char rxBuffer[50];
+  while (1)
+  {
+	  UART_SendString("Envoi de données via UART7\r\n");
+	  HAL_Delay(1000);
+
+	  UART_ReceiveString(rxBuffer, 50);
+	  UART_SendString("Reçu via UART7 : ");
+	  UART_SendString(rxBuffer);
+	  UART_SendString("\r\n");
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	}
+  }
   /* USER CODE END 3 */
 }
 
@@ -231,39 +160,6 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief UART7 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_UART7_Init(void)
-{
-
-  /* USER CODE BEGIN UART7_Init 0 */
-
-  /* USER CODE END UART7_Init 0 */
-
-  /* USER CODE BEGIN UART7_Init 1 */
-
-  /* USER CODE END UART7_Init 1 */
-  huart7.Instance = UART7;
-  huart7.Init.BaudRate = 9600;
-  huart7.Init.WordLength = UART_WORDLENGTH_9B;
-  huart7.Init.StopBits = UART_STOPBITS_1;
-  huart7.Init.Parity = UART_PARITY_EVEN;
-  huart7.Init.Mode = UART_MODE_TX_RX;
-  huart7.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart7.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart7) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN UART7_Init 2 */
-
-  /* USER CODE END UART7_Init 2 */
-
-}
-
-/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -279,7 +175,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 9600;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_9B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_EVEN;
@@ -303,24 +199,11 @@ static void MX_USART1_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* USER CODE BEGIN MX_GPIO_Init_1 */
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_13|GPIO_PIN_14, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : PG13 PG14 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_14;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
@@ -337,10 +220,11 @@ static void MX_GPIO_Init(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-	/* User can add his own implementation to report the HAL error return state */
-	__disable_irq();
-	while (1) {
-	}
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
   /* USER CODE END Error_Handler_Debug */
 }
 
