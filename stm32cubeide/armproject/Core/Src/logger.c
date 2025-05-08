@@ -6,12 +6,12 @@
  */
 
 #include "logger.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 
-log_level global_level = LOG_INFO;
-static char tx_buffer[256];
+static char TX_Buffer[256];
 
 const char* log_level_to_str(log_level level) {
     switch (level) {
@@ -23,17 +23,18 @@ const char* log_level_to_str(log_level level) {
     }
 }
 
-void log(log_levet level, const char* fmt, ...) {
+void gap_log(log_level level, const char *fmt, ...) {
 	int len = 0;
-	len += snprintf(tx_buffer, sizeof(tx_buffer), "[%s] ", log_level_to_str(level));
+	len += snprintf(TX_Buffer, sizeof(TX_Buffer), "[%s] ", log_level_to_str(level));
 
 	va_list args;
 	va_start(args, fmt);
-	len += vsnprintf(tx_buffer + len, sizeof(tx_buffer) - len, fmt, args);
+	len += vsnprintf(TX_Buffer + len, sizeof(TX_Buffer) - len, fmt, args);
 	va_end(args);
 
-	snprintf(tx_buffer + len, sizeof(tx_buffer) - len, "\r\n");
+	snprintf(TX_Buffer + len, sizeof(TX_Buffer) - len, "\r\n");
 
-	HAL_UART_Transmit_IT(&huart1, (uint8_t *)tx_buffer, strlen(tx_buffer));
+	HAL_UART_Transmit(&huart1, (uint8_t*) TX_Buffer, strlen(TX_Buffer),
+			HAL_MAX_DELAY);
 }
 

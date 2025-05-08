@@ -53,6 +53,8 @@ UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+log_level global_level = LOG_INFO;
+
 static gapcom_handle_t *handle;
 static communicator_t *communicator;
 
@@ -176,7 +178,7 @@ int main(void)
 	communicator->recv(communicator, (uint8_t*) RX_Buffer,
 			GAPCOM_TF_HEADER_SIZE_BYTES);
 
-	log(LOG_INFO, "GAP system booted");
+	gap_log(LOG_INFO, "GAP system booted");
   /* USER CODE END 2 */
 
   /* Infinite loop */

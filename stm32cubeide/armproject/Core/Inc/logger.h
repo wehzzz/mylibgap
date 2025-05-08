@@ -10,6 +10,8 @@
 
 #include <gapcom_core.h>
 
+#include "stm32f4xx_hal.h"
+
 #define LOG_MAX 4
 
 typedef enum {
@@ -20,6 +22,8 @@ typedef enum {
 } log_level;
 
 extern log_level global_level;
-void log(log_levet level, const char* fmt, ...);
+extern UART_HandleTypeDef huart1;
+
+void gap_log(log_level level, const char *fmt, ...);
 
 #endif /* INC_LOGGER_H_ */
