@@ -13,7 +13,12 @@
 
 static char TX_Buffer[256];
 
-const char* log_level_to_str(log_level level) {
+/**
+ * @brief Convert the enum log_level into string
+ * @param level log level
+ * @return the string according to the given level
+ */
+static const char* log_level_to_str(log_level level) {
     switch (level) {
         case LOG_DEBUG:   return "Debug";
         case LOG_INFO:    return "Info";
@@ -24,6 +29,10 @@ const char* log_level_to_str(log_level level) {
 }
 
 void gap_log(log_level level, const char *fmt, ...) {
+	// Log according to the current verbosity
+	if (level < global_level)
+		return;
+
 	int len = 0;
 	len += snprintf(TX_Buffer, sizeof(TX_Buffer), "[%s] ", log_level_to_str(level));
 

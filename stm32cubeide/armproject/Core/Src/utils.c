@@ -5,9 +5,9 @@
  *      Author: lb
  */
 #include "utils.h"
-#include "stm32f4xx_hal.h"
 
 #include <gapcom_core.h>
+#include "stm32f4xx_hal.h"
 
 static void flash_gpio(GPIO_TypeDef *gpio, uint16_t pin, uint32_t delay) {
 	HAL_GPIO_WritePin(gpio, pin, GPIO_PIN_SET);

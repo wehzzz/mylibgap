@@ -10,7 +10,20 @@
 
 #include <gapcom_core.h>
 
+/**
+ * @brief Function called when PING_REQ is received
+ * 		  Always respond GAP_OK
+ * @param handle Handle to libgapcom session
+ * @param proto_msg Received message
+ */
 void ping_callback(gapcom_handle_t *handle, const void *proto_msg);
+
+/**
+ * @brief Function called when SET_LOG_VERBOSITY_REQ is received
+ * 		  Respond GAP_OK if the given verbosity is correct, GAP_INVALID_LOG_VERBOSITY otherwise
+ * @param handle Handle to libgapcom session
+ * @param proto_msg Received message
+ */
 void set_log_verbosity_callback(gapcom_handle_t *handle, const void *proto_msg);
 
 #endif /* INC_CALLBACKS_H_ */
