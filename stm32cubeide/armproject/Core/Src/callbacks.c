@@ -10,6 +10,8 @@
 
 #include "stm32f4xx_hal.h"
 #include "logger.h"
+#include "version.h"
+#include "utils.h"
 
 void ping_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	gap_log(LOG_DEBUG, "PING_REQ received");
@@ -30,4 +32,39 @@ void set_log_verbosity_callback(gapcom_handle_t *handle, const void *proto_msg) 
 		global_level = tmp_level;
 		gapcom_respond_set_log_verbosity(handle, GAPErrorCode_GAP_OK);
 	}
+}
+
+void set_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
+	gap_log(LOG_DEBUG, "SET_VERSION_REQ received");
+
+	const GAPSetVersionReq *req = (const GAPSetVersionReq *)proto_msg;
+
+
+	// todo -> check si semver valide
+
+	uint32_t version[3];
+	version[0] = char_to_uint32(req->version);
+	version[1] = char_to_uint32(req->version + 4);
+	version[2] = char_to_uint32(req->version + 8);
+	if (flash_write_version(version) == HAL_OK) {
+		gapcom_respond_set_version(handle, GAPErrorCode_GAP_OK);
+	}
+	else {
+		gapcom_respond_set_version(handle, GAPErrorCode_GAP_INVALID_VERSION_FORMAT);
+	}
+}
+
+void get_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
+	gap_log(LOG_DEBUG, "GET_VERSION_REQ received");
+	UNUSED(proto_msg);
+
+	uint32_t version_tmp[3];
+	char version[12];
+
+	flash_read_version(version_tmp);
+
+	//todo check if nothing -> return 0.0.0
+	uint32_to_char(version_tmp, version);
+
+	gapcom_respond_get_version(handle, GAPErrorCode_GAP_OK, version);
 }

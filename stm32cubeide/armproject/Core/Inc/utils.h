@@ -33,4 +33,8 @@ void flash_red_led();
  */
 size_t get_protobuf_len(const uint8_t *buf);
 
+uint32_t char_to_uint32(const char* data);
+
+void uint32_to_char(uint32_t* data, char* result);
+
 #endif /* INC_UTILS_H_ */

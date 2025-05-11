@@ -31,6 +31,7 @@
 #include "utils.h"
 #include "callbacks.h"
 #include "logger.h"
+#include "version.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -173,6 +174,10 @@ int main(void) {
 	gapcom_install_callback(handle, &ping_callback, GAPCOM_MSG_PING_REQ);
 	gapcom_install_callback(handle, &set_log_verbosity_callback,
 			GAPCOM_MSG_SET_LOG_VERBOSITY_REQ);
+	gapcom_install_callback(handle, &set_version_callback,
+			GAPCOM_MSG_SET_VERSION_REQ);
+	gapcom_install_callback(handle, &get_version_callback,
+			GAPCOM_MSG_GET_VERSION_REQ);
 
 	// Receive first header
 	communicator->recv(communicator, (uint8_t*) RX_Buffer,
