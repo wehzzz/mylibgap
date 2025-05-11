@@ -14,6 +14,7 @@ extern I2C_HandleTypeDef hi2c1;
 
 #define MPU6050_I2C_ADDR 0x68 << 1
 #define MPU6050_SMPRT_DIV 0x19
+#define MPU6050_CONFIG 0x1A
 #define MPU6050_GYRO_CONFIG 0x1B
 #define MPU6050_FIFO_EN 0x23
 #define MPU6050_I2C_MST_CTRL 0x24

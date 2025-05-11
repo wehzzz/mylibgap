@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdlib.h>
 
 static char TX_Buffer[256];
 

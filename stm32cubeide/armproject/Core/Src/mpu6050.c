@@ -49,9 +49,12 @@ HAL_StatusTypeDef MPU6050_Init() {
 	status |= mem_write(MPU6050_I2C_MST_CTRL, 0);
 	gap_log(LOG_DEBUG, "Disable multi-master %d", status);
 
+	// Enable DPLF = Digital Low Pass Filter
+	status |= mem_write(MPU6050_CONFIG, 0b00000100);
+	gap_log(LOG_DEBUG, "Enable DPLF %d", status);
+
 	if (status == HAL_OK) {
 		gyro_enable = true;
-		gap_log(LOG_DEBUG, "Gyro enabled");
 	}
 	return status;
 }
