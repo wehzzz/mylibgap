@@ -47,3 +47,24 @@ void gap_log(log_level level, const char *fmt, ...) {
 			HAL_MAX_DELAY);
 }
 
+void gap_log_gyro(GyroData *data) {
+	char sx[8], sy[8], sz[8];
+
+	if (data->x < 0)
+		snprintf(sx, sizeof(sx), "-X%05d", abs(data->x));
+	else
+		snprintf(sx, sizeof(sx), "X%05d", data->x);
+
+	if (data->y < 0)
+		snprintf(sy, sizeof(sy), "-Y%05d", abs(data->y));
+	else
+		snprintf(sy, sizeof(sy), "Y%05d", data->y);
+
+	if (data->z < 0)
+		snprintf(sz, sizeof(sz), "-Z%05d", abs(data->z));
+	else
+		snprintf(sz, sizeof(sz), "Z%05d", data->z);
+
+	gap_log(LOG_INFO, "%s %s %s", sx, sy, sz);
+}
+

@@ -26,4 +26,12 @@ void ping_callback(gapcom_handle_t *handle, const void *proto_msg);
  */
 void set_log_verbosity_callback(gapcom_handle_t *handle, const void *proto_msg);
 
+/**
+ * @brief Function called when SET_GYSROSCOPE_REQ is received
+ * 		  Always respond GAP_OK
+ * @param handle Handle to libgapcom session
+ * @param proto_msg Received message
+ */
+void set_gyroscope_callback(gapcom_handle_t *handle, const void *proto_msg);
+
 #endif /* INC_CALLBACKS_H_ */

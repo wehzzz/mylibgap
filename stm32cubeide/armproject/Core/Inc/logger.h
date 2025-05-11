@@ -11,6 +11,7 @@
 #include <gapcom_core.h>
 
 #include "stm32f4xx_hal.h"
+#include "mpu6050.h"
 
 #define LOG_MAX 3
 
@@ -31,5 +32,11 @@ extern UART_HandleTypeDef huart1; // UART where to send logs
  * @param ... Arguments to pass to printf
  */
 void gap_log(log_level level, const char *fmt, ...);
+
+/**
+ * @brief Log gyroscope data in INFO level with X... Y... Z... format
+ * @param data Gyroscope data to log
+ */
+void gap_log_gyro(GyroData *data);
 
 #endif /* INC_LOGGER_H_ */
