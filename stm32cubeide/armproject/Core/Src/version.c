@@ -33,8 +33,14 @@ HAL_StatusTypeDef flash_write_version(uint32_t *data) {
 	return HAL_FLASH_Lock();
 }
 
-void flash_read_version(uint32_t* data){
+bool flash_read_version(uint32_t* data){
+	bool has_data = false;
 	for (uint32_t i = 0; i < WORDS_NUMBER; i++) {
-		data[i] = *((uint32_t*) SECTOR12_START + i * 4);
+		uint32_t tmp = *((uint32_t*) SECTOR12_START + i * 4);
+		if (tmp != 0xffffffff) {
+			has_data = true;
+		}
+		data[i] = tmp;
 	}
+	return has_data;
 }

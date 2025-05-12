@@ -66,10 +66,20 @@ void get_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	uint32_t version_tmp[3];
 	char version[12];
 
-	flash_read_version(version_tmp);
+	if (!flash_read_version(version_tmp)) {
+		version[0] = '0';
+		version[1] = '.';
+		version[2] = '0';
+		version[3] = '.';
+		version[4] = '0';
+		version[5] = '\0';
+	}
+	else {
+		uint32_to_char(version_tmp, version);
+	}
 
 	//todo check if nothing -> return 0.0.0
-	uint32_to_char(version_tmp, version);
+
 
 	gap_log(LOG_DEBUG, "version %d", version);
 
