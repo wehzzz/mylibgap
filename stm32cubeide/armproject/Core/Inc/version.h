@@ -13,7 +13,7 @@
 #define WORDS_NUMBER 3
 #define SECTOR12_START 0x08100000
 
-uint32_t flash_write_version(uint32_t* data);
+HAL_StatusTypeDef flash_write_version(uint32_t *data);
 void flash_read_version(uint32_t* data);
 
 #endif /* INC_VERSION_H_ */

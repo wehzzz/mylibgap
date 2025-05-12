@@ -7,7 +7,7 @@
 
 #include "version.h"
 
-uint32_t flash_write_version(uint32_t* data) {
+HAL_StatusTypeDef flash_write_version(uint32_t *data) {
 	if (HAL_FLASH_Unlock() != HAL_OK) {
 		return HAL_ERROR;
 	}
@@ -21,6 +21,7 @@ uint32_t flash_write_version(uint32_t* data) {
 	EraseInitStruct.NbSectors = 1;
 
 	if (HAL_FLASHEx_Erase(&EraseInitStruct, &err) != HAL_OK) {
+
 		return HAL_FLASH_GetError ();
 	}
 
@@ -30,7 +31,7 @@ uint32_t flash_write_version(uint32_t* data) {
 			return HAL_FLASH_GetError();
 		}
 	}
-	return HAL_FLASH_Lock() == HAL_OK;
+	return HAL_FLASH_Lock();
 }
 
 void flash_read_version(uint32_t* data){
