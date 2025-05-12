@@ -47,10 +47,10 @@ void uint32_to_char(uint32_t* data, char* result) {
 }
 
 uint32_t char_to_uint32(const char* data) {
-    return ((uint32_t)(uint8_t)data[0] << 24) |
-           ((uint32_t)(uint8_t)data[1] << 16) |
-           ((uint32_t)(uint8_t)data[2] << 8)  |
-           ((uint32_t)(uint8_t)data[3]);
+    return ((uint32_t)(data)[0] << 24) |
+           ((uint32_t)(data)[1] << 16) |
+           ((uint32_t)(data)[2] << 8)  |
+           ((uint32_t)(data)[3]);
 }
 
 static bool is_numeric_identifier(const char* version, size_t start, size_t end) {

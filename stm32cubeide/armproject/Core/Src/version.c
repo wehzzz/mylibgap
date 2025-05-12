@@ -21,7 +21,7 @@ uint32_t flash_write_version(uint32_t* data) {
 	EraseInitStruct.NbSectors = 1;
 
 	if (HAL_FLASHEx_Erase(&EraseInitStruct, &err) != HAL_OK) {
-		return HAL_FLASH_GetError ();
+		return HAL_FLASH_GetError();
 	}
 
 	for (uint32_t i = 0; i < WORDS_NUMBER; i++) {
