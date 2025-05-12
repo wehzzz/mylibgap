@@ -10,6 +10,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * @brief Put LD3 (PG13) on for 200 ms
@@ -36,5 +37,7 @@ size_t get_protobuf_len(const uint8_t *buf);
 uint32_t char_to_uint32(const char* data);
 
 void uint32_to_char(uint32_t* data, char* result);
+
+bool is_valid_semver(const char* version);
 
 #endif /* INC_UTILS_H_ */

@@ -39,17 +39,22 @@ void set_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 
 	const GAPSetVersionReq *req = (const GAPSetVersionReq *)proto_msg;
 
-
-	// todo -> check si semver valide
+	if (!is_valid_semver(req->version)) {
+		gap_log(LOG_DEBUG, "SET_VERSION_REQ invalid semver");
+		gapcom_respond_set_version(handle, GAPErrorCode_GAP_INVALID_VERSION_FORMAT);
+		return;
+	}
 
 	uint32_t version[3];
 	version[0] = char_to_uint32(req->version);
 	version[1] = char_to_uint32(req->version + 4);
 	version[2] = char_to_uint32(req->version + 8);
 	if (flash_write_version(version) == HAL_OK) {
+		gap_log(LOG_DEBUG, "SET_VERSION_REQ write to flash successful");
 		gapcom_respond_set_version(handle, GAPErrorCode_GAP_OK);
 	}
 	else {
+		gap_log(LOG_DEBUG, "SET_VERSION_REQ cannot write to flash");
 		gapcom_respond_set_version(handle, GAPErrorCode_GAP_INVALID_VERSION_FORMAT);
 	}
 }
