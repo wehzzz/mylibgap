@@ -82,7 +82,6 @@ static void UART_RXComplete(UART_HandleTypeDef *huart) {
 	// TinyFrame header received, decode it to extract protocol buffer length
 	if (protobuf_len == -1) {
 		// Extract len
-		// TODO: not sure if it's working
 		protobuf_len = get_protobuf_len((uint8_t*) RX_Buffer);
 		if (protobuf_len == 0) // No body means no data checksum
 			goto accept;
@@ -94,10 +93,16 @@ static void UART_RXComplete(UART_HandleTypeDef *huart) {
 	// Protocol buffer and data checksum received
 	else {
 		accept:
+
 		// Body + Data checksum received, we can call accept
-		gapcom_accept(handle, (uint8_t*) RX_Buffer,
-				GAPCOM_TF_HEADER_SIZE_BYTES + protobuf_len
-						+ GAPCOM_TF_FOOTER_SIZE_BYTES);
+		if (protobuf_len == 0) {
+			gapcom_accept(handle, (uint8_t*) RX_Buffer,
+					GAPCOM_TF_HEADER_SIZE_BYTES);
+		} else {
+			gapcom_accept(handle, (uint8_t*) RX_Buffer,
+					GAPCOM_TF_HEADER_SIZE_BYTES + protobuf_len
+							+ GAPCOM_TF_FOOTER_SIZE_BYTES);
+		}
 		protobuf_len = -1;
 
 		// Receive next header
