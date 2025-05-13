@@ -49,6 +49,11 @@ void set_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	version[0] = char_to_uint32(req->version);
 	version[1] = char_to_uint32(req->version + 4);
 	version[2] = char_to_uint32(req->version + 8);
+
+	gap_log(LOG_DEBUG, "version[0] = %d", version[0]);
+	gap_log(LOG_DEBUG, "version[1] = %d", version[1]);
+	gap_log(LOG_DEBUG, "version[2] = %d", version[2]);
+
 	if (flash_write_version(version) == HAL_OK) {
 		gap_log(LOG_DEBUG, "SET_VERSION_REQ write to flash successful");
 		gapcom_respond_set_version(handle, GAPErrorCode_GAP_OK);
@@ -77,7 +82,7 @@ void get_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	else {
 		uint32_to_char(version_tmp, version);
 	}
-	gap_log(LOG_DEBUG, "version %d", version);
+	gap_log(LOG_DEBUG, "version %s", version);
 
 	gapcom_respond_get_version(handle, GAPErrorCode_GAP_OK, version);
 }
