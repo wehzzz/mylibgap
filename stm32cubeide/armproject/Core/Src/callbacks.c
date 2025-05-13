@@ -46,8 +46,7 @@ void set_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	}
 
 	uint32_t version[3];
-	uint8_t tmp[12];
-	memcpy(version, tmp, sizeof(tmp));
+	memcpy(version, req->version, sizeof(req->version));
 	//version[0] = char_to_uint32(req->version);
 	//version[1] = char_to_uint32(req->version + 4);
 	//version[2] = char_to_uint32(req->version + 8);
