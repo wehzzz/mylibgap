@@ -46,10 +46,9 @@ void set_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	}
 
 	uint32_t version[3];
-	memcpy(version, req->version, sizeof(req->version));
-	//version[0] = char_to_uint32(req->version);
-	//version[1] = char_to_uint32(req->version + 4);
-	//version[2] = char_to_uint32(req->version + 8);
+	version[0] = char_to_uint32(req->version);
+	version[1] = char_to_uint32(req->version + 4);
+	version[2] = char_to_uint32(req->version + 8);
 
 	gap_log(LOG_DEBUG, "SET version[0] = %d", version[0]);
 	gap_log(LOG_DEBUG, "SET version[1] = %d", version[1]);
@@ -84,8 +83,7 @@ void get_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 		gap_log(LOG_DEBUG, "GET version[0] = %d", version_tmp[0]);
 		gap_log(LOG_DEBUG, "GET version[1] = %d", version_tmp[1]);
 		gap_log(LOG_DEBUG, "GET version[2] = %d", version_tmp[2]);
-		//uint32_to_char(version_tmp, version);
-		memcpy(version, version_tmp, sizeof(version_tmp));
+		uint32_to_char(version_tmp, version);
 	}
 	gap_log(LOG_DEBUG, "version %s", version);
 
