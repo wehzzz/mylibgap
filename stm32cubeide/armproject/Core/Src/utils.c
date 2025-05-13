@@ -44,7 +44,6 @@ void uint32_to_char(uint32_t* data, char* result) {
 			result[word * 4 + i] = (char)((data[word] >> (8 * (4 - 1 - i))) & 0xff);
 		}
 	}
-	result[(WORDS_NUMBER * 4) - 1] = '\0';
 }
 
 uint32_t char_to_uint32(const char* data) {
