@@ -17,7 +17,7 @@ HAL_StatusTypeDef flash_write_version(uint32_t *data) {
 
 	EraseInitStruct.TypeErase = FLASH_TYPEERASE_SECTORS;
 	EraseInitStruct.VoltageRange = FLASH_VOLTAGE_RANGE_3;
-	EraseInitStruct.Sector = FLASH_SECTOR_12;
+	EraseInitStruct.Sector = FLASH_SECTOR_11;
 	EraseInitStruct.NbSectors = 1;
 
 	if (HAL_FLASHEx_Erase(&EraseInitStruct, &err) != HAL_OK) {
@@ -25,7 +25,7 @@ HAL_StatusTypeDef flash_write_version(uint32_t *data) {
 	}
 
 	for (uint32_t i = 0; i < WORDS_NUMBER; i++) {
-		if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, SECTOR12_START + i * 4, data[i]) != HAL_OK)
+		if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, SECTOR11_START + i * 4, data[i]) != HAL_OK)
 		{
 			return HAL_FLASH_GetError();
 		}
@@ -36,7 +36,7 @@ HAL_StatusTypeDef flash_write_version(uint32_t *data) {
 bool flash_read_version(uint32_t* data){
 	bool has_data = false;
 	for (uint32_t i = 0; i < WORDS_NUMBER; i++) {
-		uint32_t tmp = *((uint32_t*) SECTOR12_START + i * 4);
+		uint32_t tmp = *((uint32_t*) SECTOR11_START + i * 4);
 		if (tmp != 0xffffffff) {
 			has_data = true;
 		}

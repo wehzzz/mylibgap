@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 #define WORDS_NUMBER 3
-#define SECTOR12_START 0x08100000
+#define SECTOR11_START 0x080E0000
 
 HAL_StatusTypeDef flash_write_version(uint32_t *data);
 bool flash_read_version(uint32_t* data);

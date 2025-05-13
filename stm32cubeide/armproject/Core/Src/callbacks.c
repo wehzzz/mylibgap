@@ -77,10 +77,6 @@ void get_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	else {
 		uint32_to_char(version_tmp, version);
 	}
-
-	//todo check if nothing -> return 0.0.0
-
-
 	gap_log(LOG_DEBUG, "version %d", version);
 
 	gapcom_respond_get_version(handle, GAPErrorCode_GAP_OK, version);
