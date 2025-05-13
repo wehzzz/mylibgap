@@ -41,7 +41,7 @@ size_t get_protobuf_len(const uint8_t *buf) {
 void uint32_to_char(uint32_t* data, char* result) {
 	for (uint32_t word = 0; word < WORDS_NUMBER; word++) {
 		for (uint32_t i = 0; i < 4; i++) {
-			result[word * 4 + i] = (char)((data[word] >> (8 * (4 - 1 - i))) & 0xff);
+			result[word * 4 + i] = (char)((data[word] >> (8 * (3 - i))) & 0xff);
 		}
 	}
 }
