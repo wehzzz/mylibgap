@@ -38,6 +38,13 @@ size_t get_protobuf_len(const uint8_t *buf) {
 	return res;
 }
 
+uint32_t char_to_uint32(const char* data) {
+    return ((uint32_t)(data)[0] << 24) |
+           ((uint32_t)(data)[1] << 16) |
+           ((uint32_t)(data)[2] << 8)  |
+           ((uint32_t)(data)[3]);
+}
+
 void uint32_to_char(uint32_t* data, char* result) {
 	for (uint32_t word = 0; word < WORDS_NUMBER; word++) {
 		for (uint32_t i = 0; i < 4; i++) {
@@ -45,13 +52,6 @@ void uint32_to_char(uint32_t* data, char* result) {
 		}
 	}
 	result[(WORDS_NUMBER * 4) - 1] = '\0';
-}
-
-uint32_t char_to_uint32(const char* data) {
-    return ((uint32_t)(data)[0] << 24) |
-           ((uint32_t)(data)[1] << 16) |
-           ((uint32_t)(data)[2] << 8)  |
-           ((uint32_t)(data)[3]);
 }
 
 static bool is_numeric_identifier(const char* version, size_t start, size_t end) {
