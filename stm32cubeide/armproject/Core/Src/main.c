@@ -32,6 +32,7 @@
 #include "callbacks.h"
 #include "logger.h"
 #include "mpu6050.h"
+#include "version.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,7 +86,6 @@ static void UART_RXComplete(UART_HandleTypeDef *huart) {
 	// TinyFrame header received, decode it to extract protocol buffer length
 	if (protobuf_len == -1) {
 		// Extract len
-		// TODO: not sure if it's working
 		protobuf_len = get_protobuf_len((uint8_t*) RX_Buffer);
 		if (protobuf_len == 0) // No body means no data checksum
 			goto accept;
@@ -97,10 +97,11 @@ static void UART_RXComplete(UART_HandleTypeDef *huart) {
 	// Protocol buffer and data checksum received
 	else {
 		accept:
+
 		// Body + Data checksum received, we can call accept
 		if (protobuf_len == 0) {
 			gapcom_accept(handle, (uint8_t*) RX_Buffer,
-			GAPCOM_TF_HEADER_SIZE_BYTES);
+					GAPCOM_TF_HEADER_SIZE_BYTES);
 		} else {
 			gapcom_accept(handle, (uint8_t*) RX_Buffer,
 					GAPCOM_TF_HEADER_SIZE_BYTES + protobuf_len
@@ -186,6 +187,10 @@ int main(void) {
 			GAPCOM_MSG_SET_LOG_VERBOSITY_REQ);
 	gapcom_install_callback(handle, &set_gyroscope_callback,
 			GAPCOM_MSG_SET_GYROSCOPE_REQ);
+	gapcom_install_callback(handle, &set_version_callback,
+			GAPCOM_MSG_SET_VERSION_REQ);
+	gapcom_install_callback(handle, &get_version_callback,
+			GAPCOM_MSG_GET_VERSION_REQ);
 
 	// Receive first header
 	communicator->recv(communicator, (uint8_t*) RX_Buffer,
