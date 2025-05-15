@@ -20,10 +20,6 @@ void flash_led_tx_complete() {
 	flash_gpio(GPIOG, GPIO_PIN_13, 200);
 }
 
-void flash_led_rx_complete() {
-	flash_gpio(GPIOG, GPIO_PIN_13, 50);
-}
-
 void flash_red_led() {
 	flash_gpio(GPIOG, GPIO_PIN_14, 1000);
 }
@@ -45,7 +41,7 @@ uint32_t char_to_uint32(const char* data) {
            ((uint32_t)(data)[3]);
 }
 
-void uint32_to_char(uint32_t* data, char* result) {
+void uint32_to_char(const uint32_t* data, char* result) {
 	for (uint32_t word = 0; word < WORDS_NUMBER; word++) {
 		for (uint32_t i = 0; i < 4; i++) {
 			result[word * 4 + i] = (char)((data[word] >> (8 * (3 - i))) & 0xff);

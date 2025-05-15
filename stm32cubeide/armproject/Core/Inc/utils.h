@@ -18,11 +18,6 @@
 void flash_led_tx_complete();
 
 /**
- * @brief Put LD3 (PG13) on for 50 ms
- */
-void flash_led_rx_complete();
-
-/**
  * @brief Put LD4 (PG14) on for 100 ms
  */
 void flash_red_led();

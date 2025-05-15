@@ -45,7 +45,8 @@ void set_gyroscope_callback(gapcom_handle_t *handle, const void *proto_msg) {
 		if (MPU6050_Init() != HAL_OK) {
 			gap_log(LOG_ERROR, "Unable to start the gyroscope");
 		}
-	} else {
+	} else
+	{
 		// Disable the gyroscope
 		gap_log(LOG_INFO, "Stopping the gyroscope");
 		if (MPU6050_Disable() != HAL_OK) {
