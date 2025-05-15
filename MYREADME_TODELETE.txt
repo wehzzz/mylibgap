@@ -16,3 +16,11 @@ Dans mpu6050_init, mettre DPLF ? filtre passe-bas numérique ?
 Conversion entre raw valeur et °/s ?
 Comment interpréter le retour du gyro ?
 Est-ce que mes 0bxxxx sont considérés comme valeur en dur ? ("mpu6050.c")
+
+
+Finir remplir README
+
+
+Selftest on commence ?
+"Les 2 points restants sont distribués dès l’établissement de l’infrastructure de
+test."
