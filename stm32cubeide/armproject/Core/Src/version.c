@@ -25,15 +25,15 @@ HAL_StatusTypeDef flash_write_version(uint32_t *data) {
 	}
 
 	for (uint32_t i = 0; i < WORDS_NUMBER; i++) {
-		if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, SECTOR11_START + i * 4, data[i]) != HAL_OK)
-		{
+		if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, SECTOR11_START + i * 4,
+				data[i]) != HAL_OK) {
 			return HAL_FLASH_GetError();
 		}
 	}
 	return HAL_FLASH_Lock();
 }
 
-bool flash_read_version(uint32_t* data){
+bool flash_read_version(uint32_t *data) {
 	bool has_data = false;
 	for (uint32_t i = 0; i < WORDS_NUMBER; i++) {
 		uint32_t tmp = *((uint32_t*) (SECTOR11_START + i * 4));

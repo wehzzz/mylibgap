@@ -20,13 +20,18 @@ static char TX_Buffer[256];
  * @return the string according to the given level
  */
 static const char* log_level_to_str(log_level level) {
-    switch (level) {
-        case LOG_DEBUG:   return "Debug";
-        case LOG_INFO:    return "Info";
-        case LOG_WARNING: return "Warning";
-        case LOG_ERROR:   return "Error";
-        default:          return "UNKNOWN";
-    }
+	switch (level) {
+	case LOG_DEBUG:
+		return "Debug";
+	case LOG_INFO:
+		return "Info";
+	case LOG_WARNING:
+		return "Warning";
+	case LOG_ERROR:
+		return "Error";
+	default:
+		return "UNKNOWN";
+	}
 }
 
 void gap_log(log_level level, const char *fmt, ...) {
@@ -35,16 +40,19 @@ void gap_log(log_level level, const char *fmt, ...) {
 		return;
 
 	int len = 0;
-	len += snprintf(TX_Buffer, sizeof(TX_Buffer), "[%s] ", log_level_to_str(level));
+	len += snprintf(TX_Buffer, sizeof(TX_Buffer), "[%s] ",
+			log_level_to_str(level));
 
 	va_list args;
 	va_start(args, fmt);
-	len += vsnprintf(TX_Buffer + len, sizeof(TX_Buffer) - (size_t)len, fmt, args);
+	len += vsnprintf(TX_Buffer + len, sizeof(TX_Buffer) - (size_t) len, fmt,
+			args);
 	va_end(args);
 
-	snprintf(TX_Buffer + len, sizeof(TX_Buffer) - (size_t)len, "\r\n");
+	snprintf(TX_Buffer + len, sizeof(TX_Buffer) - (size_t) len, "\r\n");
 
-	HAL_UART_Transmit(&huart1, (uint8_t*) TX_Buffer, (uint16_t)strlen(TX_Buffer),
+	HAL_UART_Transmit(&huart1, (uint8_t*) TX_Buffer,
+			(uint16_t) strlen(TX_Buffer),
 			HAL_MAX_DELAY);
 }
 

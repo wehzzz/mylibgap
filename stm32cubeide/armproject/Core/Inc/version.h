@@ -27,6 +27,6 @@ HAL_StatusTypeDef flash_write_version(uint32_t *data);
  * @param data Pointer to an allocated array of length WORDS_NUMBER
  * @return true if data has been found, false otherwise
  */
-bool flash_read_version(uint32_t* data);
+bool flash_read_version(uint32_t *data);
 
 #endif /* INC_VERSION_H_ */

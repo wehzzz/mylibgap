@@ -34,24 +34,24 @@ int get_protobuf_len(const uint8_t *buf) {
 	return res;
 }
 
-uint32_t char_to_uint32(const char* data) {
-    return ((uint32_t)(data)[0] << 24) |
-           ((uint32_t)(data)[1] << 16) |
-           ((uint32_t)(data)[2] << 8)  |
-           ((uint32_t)(data)[3]);
+uint32_t char_to_uint32(const char *data) {
+	return ((uint32_t) (data)[0] << 24) | ((uint32_t) (data)[1] << 16)
+			| ((uint32_t) (data)[2] << 8) | ((uint32_t) (data)[3]);
 }
 
-void uint32_to_char(const uint32_t* data, char* result) {
+void uint32_to_char(const uint32_t *data, char *result) {
 	for (uint32_t word = 0; word < WORDS_NUMBER; word++) {
 		for (uint32_t i = 0; i < 4; i++) {
-			result[word * 4 + i] = (char)((data[word] >> (8 * (3 - i))) & 0xff);
+			result[word * 4 + i] =
+					(char) ((data[word] >> (8 * (3 - i))) & 0xff);
 		}
 	}
 	result[(WORDS_NUMBER * 4) - 1] = '\0';
 }
 
-static bool is_numeric_identifier(const char* version, size_t start, size_t end) {
-	if (start >= end) return false;
+static bool is_numeric_identifier(const char *version, size_t start, size_t end) {
+	if (start >= end)
+		return false;
 	if (version[start] == '0' && (end - start) == 1) {
 		return true;
 	}
@@ -64,7 +64,7 @@ static bool is_numeric_identifier(const char* version, size_t start, size_t end)
 	return true;
 }
 
-bool is_valid_semver(const char* version) {
+bool is_valid_semver(const char *version) {
 	int dot_count = 0;
 	size_t start = 0;
 	size_t end = 0;

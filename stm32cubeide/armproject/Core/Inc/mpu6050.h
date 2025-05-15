@@ -39,6 +39,7 @@ extern I2C_HandleTypeDef hi2c1;
 #define FIFO_OVERFLOW 0b00010000
 #define RATE_DIVIDER_VALUE 49
 #define MAX_OVERFLOW 5
+#define LSB_SENSITIVITY 131
 
 typedef struct GyroData {
 	int16_t x;
@@ -69,6 +70,5 @@ void MPU6050_Handle_FIFO_Overflow();
  * @return HAL status
  */
 HAL_StatusTypeDef MPU6050_Disable();
-
 
 #endif /* INC_MPU6050_H_ */

@@ -34,20 +34,20 @@ int get_protobuf_len(const uint8_t *buf);
  * @param data Array of char of length 4
  * @return Computed uint32
  */
-uint32_t char_to_uint32(const char* data);
+uint32_t char_to_uint32(const char *data);
 
 /**
  * @brief Convert an array of uint32 of length WORDS_NUMBER into an array of char
  * @param data Array of uint32 to convert
  * @param result Resulted array of char, must be previously allocated
  */
-void uint32_to_char(uint32_t* data, char* result);
+void uint32_to_char(const uint32_t *data, char *result);
 
 /**
  * @brief Verify that the given string is a valid semver (MAJOR.MINOR.PATCH)
  * @param version String to check
  * @return true if it's valid, false otherwise
  */
-bool is_valid_semver(const char* version);
+bool is_valid_semver(const char *version);
 
 #endif /* INC_UTILS_H_ */

@@ -16,10 +16,7 @@
 #define LOG_MAX 3
 
 typedef enum {
-    LOG_DEBUG = 0,
-    LOG_INFO = 1,
-    LOG_WARNING = 2,
-    LOG_ERROR = 3
+	LOG_DEBUG = 0, LOG_INFO = 1, LOG_WARNING = 2, LOG_ERROR = 3
 } log_level;
 
 extern log_level global_level; // Current level set using set-log-verbosity

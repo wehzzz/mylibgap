@@ -101,9 +101,9 @@ HAL_StatusTypeDef MPU6050_GetData(GyroData *data) {
 
 	// Full Scale Range is default value = 250°/s
 	// According to the register map, the corresponding LSB Sensitivity is 131 LSB/°/s
-	data->x /= 131;
-	data->y /= 131;
-	data->z /= 131;
+	data->x /= LSB_SENSITIVITY;
+	data->y /= LSB_SENSITIVITY;
+	data->z /= LSB_SENSITIVITY;
 
 	return HAL_OK;
 }
@@ -118,15 +118,15 @@ void MPU6050_Handle_FIFO_Overflow() {
 	if (status & FIFO_OVERFLOW) { // It's a FIFO overflow
 		nb_fifo_overflows++;
 
-		gap_log(LOG_ERROR, "FIFO overflow %d/%d", nb_fifo_overflows, MAX_OVERFLOW);
+		gap_log(LOG_ERROR, "FIFO overflow %d/%d", nb_fifo_overflows,
+				MAX_OVERFLOW);
 		// Reset FIFO
 		mem_write(MPU6050_USER_CTRL, FIFO_RESET_VALUE | FIFO_ENABLE_VALUE);
 
 		if (nb_fifo_overflows >= MAX_OVERFLOW) {
 			nb_fifo_overflows = 0;
 			MPU6050_Disable();
-			gap_log(LOG_ERROR,
-					"Disabling MPU6050, 5 FIFO overflow detected");
+			gap_log(LOG_ERROR, "Disabling MPU6050, 5 FIFO overflow detected");
 		}
 	}
 }

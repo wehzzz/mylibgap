@@ -23,13 +23,13 @@ void ping_callback(gapcom_handle_t *handle, const void *proto_msg) {
 void set_log_verbosity_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	gap_log(LOG_DEBUG, "SET_LOG_VERBOSITY_REQ received");
 
-	const GAPSetLogVerbosityReq *req = (const GAPSetLogVerbosityReq *)proto_msg;
-	log_level tmp_level = (log_level)req->verbosity;
+	const GAPSetLogVerbosityReq *req = (const GAPSetLogVerbosityReq*) proto_msg;
+	log_level tmp_level = (log_level) req->verbosity;
 
 	if (tmp_level > LOG_MAX) {
-		gapcom_respond_set_log_verbosity(handle, GAPErrorCode_GAP_INVALID_LOG_VERBOSITY);
-	}
-	else {
+		gapcom_respond_set_log_verbosity(handle,
+				GAPErrorCode_GAP_INVALID_LOG_VERBOSITY);
+	} else {
 		global_level = tmp_level;
 		gapcom_respond_set_log_verbosity(handle, GAPErrorCode_GAP_OK);
 	}
@@ -45,8 +45,7 @@ void set_gyroscope_callback(gapcom_handle_t *handle, const void *proto_msg) {
 		if (MPU6050_Init() != HAL_OK) {
 			gap_log(LOG_ERROR, "Unable to start the gyroscope");
 		}
-	} else
-	{
+	} else {
 		// Disable the gyroscope
 		gap_log(LOG_INFO, "Stopping the gyroscope");
 		if (MPU6050_Disable() != HAL_OK) {
@@ -59,15 +58,16 @@ void set_gyroscope_callback(gapcom_handle_t *handle, const void *proto_msg) {
 void set_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	gap_log(LOG_DEBUG, "SET_VERSION_REQ received");
 
-	const GAPSetVersionReq *req = (const GAPSetVersionReq *)proto_msg;
+	const GAPSetVersionReq *req = (const GAPSetVersionReq*) proto_msg;
 
 	if (!is_valid_semver(req->version)) {
 		gap_log(LOG_ERROR, "SET_VERSION_REQ invalid semver");
-		gapcom_respond_set_version(handle, GAPErrorCode_GAP_INVALID_VERSION_FORMAT);
+		gapcom_respond_set_version(handle,
+				GAPErrorCode_GAP_INVALID_VERSION_FORMAT);
 		return;
 	}
 
-	uint32_t version[3] = {0};
+	uint32_t version[3] = { 0 };
 	version[0] = char_to_uint32(req->version);
 	version[1] = char_to_uint32(req->version + 4);
 	version[2] = char_to_uint32(req->version + 8);
@@ -75,8 +75,7 @@ void set_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 	if (flash_write_version(version) == HAL_OK) {
 		gap_log(LOG_INFO, "SET_VERSION_REQ write to flash successful");
 		gapcom_respond_set_version(handle, GAPErrorCode_GAP_OK);
-	}
-	else {
+	} else {
 		gap_log(LOG_ERROR, "SET_VERSION_REQ cannot write to flash");
 		gapcom_respond_set_version(handle, GAPErrorCode_GAP_OK);
 	}
@@ -96,8 +95,7 @@ void get_version_callback(gapcom_handle_t *handle, const void *proto_msg) {
 		version[3] = '.';
 		version[4] = '0';
 		version[5] = '\0';
-	}
-	else {
+	} else {
 		uint32_to_char(version_tmp, version);
 	}
 

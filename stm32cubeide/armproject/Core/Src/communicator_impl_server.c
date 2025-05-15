@@ -26,12 +26,12 @@ int close(communicator_t *self) {
 
 ssize_t send(communicator_t *self, const uint8_t *buf, size_t len) {
 	UNUSED(self);
-	return HAL_UART_Transmit_IT(&huart7, buf, (uint16_t)len);
+	return HAL_UART_Transmit_IT(&huart7, buf, (uint16_t) len);
 }
 
 ssize_t recv(communicator_t *self, uint8_t *buf, size_t len) {
 	UNUSED(self);
-	return HAL_UART_Receive_IT(&huart7, buf, (uint16_t)len);
+	return HAL_UART_Receive_IT(&huart7, buf, (uint16_t) len);
 }
 
 communicator_t* communicator_impl_server_get() {
