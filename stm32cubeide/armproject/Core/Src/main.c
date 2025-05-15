@@ -78,7 +78,7 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static void UART_RXComplete(UART_HandleTypeDef *huart) {
+static void UART_RXComplete(const UART_HandleTypeDef *huart) {
 	if (huart != &huart7) {
 		return;
 	}
@@ -115,6 +115,7 @@ static void UART_RXComplete(UART_HandleTypeDef *huart) {
 	}
 }
 
+// cppcheck-suppress unusedFunction
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	if (GPIO_Pin == GPIO_PIN_0) {
 		MPU6050_Handle_FIFO_Overflow();
