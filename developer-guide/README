@@ -1,0 +1,8 @@
+In the folder developer-guide,
+
+docker build -t sphinx-docs .
+docker run --rm -v $(pwd)/..:/docs sphinx-docs
+
+And then open build/html/index.html with your web browser
+
+Sphinx 8.2.3
