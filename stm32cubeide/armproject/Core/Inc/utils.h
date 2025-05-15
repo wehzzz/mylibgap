@@ -32,7 +32,7 @@ void flash_red_led();
  * @param buf Current RX_Buffer filled with header part
  * @return length of the protocol buffer to receive
  */
-size_t get_protobuf_len(const uint8_t *buf);
+int get_protobuf_len(const uint8_t *buf);
 
 /**
  * @brief Convert 4 char into an uint32

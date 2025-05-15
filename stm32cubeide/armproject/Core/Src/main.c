@@ -92,7 +92,7 @@ static void UART_RXComplete(UART_HandleTypeDef *huart) {
 
 		communicator->recv(communicator,
 				(uint8_t*) (RX_Buffer + GAPCOM_TF_HEADER_SIZE_BYTES),
-				protobuf_len + GAPCOM_TF_FOOTER_SIZE_BYTES);
+				(size_t)(protobuf_len + GAPCOM_TF_FOOTER_SIZE_BYTES));
 	}
 	// Protocol buffer and data checksum received
 	else {
@@ -104,8 +104,8 @@ static void UART_RXComplete(UART_HandleTypeDef *huart) {
 					GAPCOM_TF_HEADER_SIZE_BYTES);
 		} else {
 			gapcom_accept(handle, (uint8_t*) RX_Buffer,
-					GAPCOM_TF_HEADER_SIZE_BYTES + protobuf_len
-							+ GAPCOM_TF_FOOTER_SIZE_BYTES);
+					(size_t)(GAPCOM_TF_HEADER_SIZE_BYTES + protobuf_len
+							+ GAPCOM_TF_FOOTER_SIZE_BYTES));
 		}
 		protobuf_len = -1;
 

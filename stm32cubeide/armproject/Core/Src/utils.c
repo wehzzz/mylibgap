@@ -28,8 +28,8 @@ void flash_red_led() {
 	flash_gpio(GPIOG, GPIO_PIN_14, 1000);
 }
 
-size_t get_protobuf_len(const uint8_t *buf) {
-	size_t res = 0;
+int get_protobuf_len(const uint8_t *buf) {
+	int res = 0;
 	int start_idx = TF_USE_SOF_BYTE + TF_ID_BYTES;
 	for (int i = 0; i < TF_LEN_BYTES; i++) {
 		res <<= 8;

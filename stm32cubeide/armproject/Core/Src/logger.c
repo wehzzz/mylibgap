@@ -39,12 +39,12 @@ void gap_log(log_level level, const char *fmt, ...) {
 
 	va_list args;
 	va_start(args, fmt);
-	len += vsnprintf(TX_Buffer + len, sizeof(TX_Buffer) - len, fmt, args);
+	len += vsnprintf(TX_Buffer + len, sizeof(TX_Buffer) - (size_t)len, fmt, args);
 	va_end(args);
 
-	snprintf(TX_Buffer + len, sizeof(TX_Buffer) - len, "\r\n");
+	snprintf(TX_Buffer + len, sizeof(TX_Buffer) - (size_t)len, "\r\n");
 
-	HAL_UART_Transmit(&huart1, (uint8_t*) TX_Buffer, strlen(TX_Buffer),
+	HAL_UART_Transmit(&huart1, (uint8_t*) TX_Buffer, (uint16_t)strlen(TX_Buffer),
 			HAL_MAX_DELAY);
 }
 
