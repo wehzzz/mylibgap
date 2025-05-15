@@ -2,6 +2,17 @@ Membres de l'équipe:
     - lucas.besnard
     - martin.levesque
 
+Pins à connecter:
+	Pour l'UART,
+		SDA => PB7
+		SCL => PB6
+	Pour le MPU6050,
+		VCC => 5V ou 3V
+		GND => GND
+		RX => PF6
+		TX => PF7
+		INT => PA0
+
 Paliers réalisés:
     - 0 - Mise en place de l'environnement
     - 1 - Console de contrôle
@@ -14,12 +25,15 @@ TODO Martin
     - 3 - Support du gyroscope
 Driver écrit dans le fichier "mpu6050.c". Difficulté à choisir quels sont les bons registres à modifier
 (ex: il y a DPLF, est-ce bien de l'activer ?) ou bien à interpréter les valeurs renvoyées par le gyroscope.
+    - A - Stockage de la version logicielle
+TODO Martin
+    - B - Mr Propre
+TODO Martin
+    - D - Le seau déborde
+
 
 Paliers non réalisés:
-    - A - Stockage de la version logicielle
-    - B - Mr Propre
     - C - Auto-test
-    - D - Le seau déborde
     - E - Mode veille
     - F - Clignotants
     - G - Guide du développeur
