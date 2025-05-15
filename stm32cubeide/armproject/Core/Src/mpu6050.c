@@ -11,6 +11,7 @@
 #include "logger.h"
 
 static bool gyro_enable = false;
+static uint8_t nb_fifo_overflows = 0;
 
 static HAL_StatusTypeDef mem_write(uint16_t reg, uint8_t data) {
 	return HAL_I2C_Mem_Write(&hi2c1, MPU6050_I2C_ADDR, reg, 1, &data, 1,
@@ -23,38 +24,39 @@ static HAL_StatusTypeDef mem_read(uint16_t reg, uint8_t *data, uint16_t size) {
 }
 
 HAL_StatusTypeDef MPU6050_Init() {
+	nb_fifo_overflows = 0;
 	HAL_StatusTypeDef status = HAL_OK;
 
 	// Reset
-	status |= mem_write(MPU6050_PWR_MGMT_1, 0b10000000);
+	status |= mem_write(MPU6050_PWR_MGMT_1, RESET_VALUE);
 	gap_log(LOG_DEBUG, "Reset %d", status);
 
 	// Wake up
-	status |= mem_write(MPU6050_PWR_MGMT_1, 0);
+	status |= mem_write(MPU6050_PWR_MGMT_1, ZERO_VALUE);
 	gap_log(LOG_DEBUG, "Wake up %d", status);
 
 	// FIFO only for gyroscope
-	status |= mem_write(MPU6050_FIFO_EN, 0b01110000);
+	status |= mem_write(MPU6050_FIFO_EN, FIFO_GYRO_VALUE);
 	gap_log(LOG_DEBUG, "FIFO only for gyro %d", status);
 	// Enable FIFO
-	status |= mem_write(MPU6050_USER_CTRL, 0b01000000);
+	status |= mem_write(MPU6050_USER_CTRL, FIFO_ENABLE_VALUE);
 	gap_log(LOG_DEBUG, "Enable FIFO %d", status);
 
 	// 20Hz : Sample Rate = GyroOutputRate / (1 + SMPLRT_DIV)
 	// 1kHz / (1 + 49) = 20 Hz so you put 49 as divider
-	status |= mem_write(MPU6050_SMPRT_DIV, 49);
+	status |= mem_write(MPU6050_SMPRT_DIV, RATE_DIVIDER_VALUE);
 	gap_log(LOG_DEBUG, "Divide rate %d", status);
 
 	// Disable multi-master I2C
-	status |= mem_write(MPU6050_I2C_MST_CTRL, 0);
+	status |= mem_write(MPU6050_I2C_MST_CTRL, ZERO_VALUE);
 	gap_log(LOG_DEBUG, "Disable multi-master %d", status);
 
 	// Enable DPLF = Digital Low Pass Filter
-	status |= mem_write(MPU6050_CONFIG, 0b00000100);
+	status |= mem_write(MPU6050_CONFIG, DPLF_VALUE);
 	gap_log(LOG_DEBUG, "Enable DPLF %d", status);
 
 	// Enable FIFO overflow interrupt
-	status |= mem_write(MPU6050_INT_ENABLE, 0b00010000);
+	status |= mem_write(MPU6050_INT_ENABLE, FIFO_OVERFLOW_VALUE);
 	gap_log(LOG_DEBUG, "Enable FIFO overflow interrupt %d", status);
 
 	if (status == HAL_OK) {
@@ -97,23 +99,30 @@ HAL_StatusTypeDef MPU6050_GetData(GyroData *data) {
 	data->y = (fifo_data[2] << 8) | fifo_data[3];
 	data->z = (fifo_data[4] << 8) | fifo_data[5];
 
+	// Full Scale Range is default value = 250°/s
+	// According to the register map, the corresponding LSB Sensitivity is 131 LSB/°/s
+	data->x /= 131;
+	data->y /= 131;
+	data->z /= 131;
+
 	return HAL_OK;
 }
 
 void MPU6050_Handle_FIFO_Overflow() {
+	if (!gyro_enable)
+		return;
 	// Verify it's a FIFO overflow interrupt and clear the flag
 	uint8_t status;
 	mem_read(MPU6050_INT_STATUS, &status, 1);
 
-	if (status & 0b00010000) { // It's a FIFO overflow
-		static uint8_t nb_fifo_overflows = 0;
+	if (status & FIFO_OVERFLOW) { // It's a FIFO overflow
 		nb_fifo_overflows++;
 
-		gap_log(LOG_ERROR, "FIFO overflow %d/5", nb_fifo_overflows);
+		gap_log(LOG_ERROR, "FIFO overflow %d/%d", nb_fifo_overflows, MAX_OVERFLOW);
 		// Reset FIFO
-		mem_write(MPU6050_USER_CTRL, 0b00000100);
+		mem_write(MPU6050_USER_CTRL, FIFO_RESET_VALUE | FIFO_ENABLE_VALUE);
 
-		if (nb_fifo_overflows >= 5) {
+		if (nb_fifo_overflows >= MAX_OVERFLOW) {
 			nb_fifo_overflows = 0;
 			MPU6050_Disable();
 			gap_log(LOG_ERROR,
@@ -127,10 +136,12 @@ HAL_StatusTypeDef MPU6050_Disable() {
 	HAL_StatusTypeDef status = HAL_OK;
 
 	// Disable and reset FIFO
-	status |= mem_write(MPU6050_USER_CTRL, 0b01000100);
+	status |= mem_write(MPU6050_USER_CTRL, FIFO_RESET_VALUE);
+	gap_log(LOG_DEBUG, "Disable and reset FIFO %d", status);
 
 	// Reset device and sleep
-	status |= mem_write(MPU6050_PWR_MGMT_1, 0b11000000);
+	status |= mem_write(MPU6050_PWR_MGMT_1, RESET_VALUE | SLEEP_VALUE);
+	gap_log(LOG_DEBUG, "Reset device and sleep %d", status);
 
 	return status;
 }
