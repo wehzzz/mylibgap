@@ -13,6 +13,7 @@
 
 #define WORDS_NUMBER 3
 #define SECTOR11_START 0x080E0000
+#define EMPTY_ADDRESS 0xffffffff
 
 /**
  * @brief Write version into flash memory
