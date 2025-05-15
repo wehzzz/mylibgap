@@ -42,10 +42,10 @@ code et enlever tous les warnings.
 Activation de l'interruption FIFO Overflow sur le MPU et réception de celle-ci
 sur la STM32, désactivation du MPU au bout de 5 overflow, reset de la FIFO à
 chaque overflow.
+    - G - Guide du développeur
 
 Paliers non réalisés:
     - C - Auto-test
     - E - Mode veille
     - F - Clignotants
-    - G - Guide du développeur
     - X - L'élément de surprise
