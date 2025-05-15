@@ -53,6 +53,10 @@ HAL_StatusTypeDef MPU6050_Init() {
 	status |= mem_write(MPU6050_CONFIG, 0b00000100);
 	gap_log(LOG_DEBUG, "Enable DPLF %d", status);
 
+	// Enable FIFO overflow interrupt
+	status |= mem_write(MPU6050_INT_ENABLE, 0b00010000);
+	gap_log(LOG_DEBUG, "Enable FIFO overflow interrupt %d", status);
+
 	if (status == HAL_OK) {
 		gyro_enable = true;
 	}
@@ -96,12 +100,34 @@ HAL_StatusTypeDef MPU6050_GetData(GyroData *data) {
 	return HAL_OK;
 }
 
+void MPU6050_Handle_FIFO_Overflow() {
+	// Verify it's a FIFO overflow interrupt and clear the flag
+	uint8_t status;
+	mem_read(MPU6050_INT_STATUS, &status, 1);
+
+	if (status & 0b00010000) { // It's a FIFO overflow
+		static uint8_t nb_fifo_overflows = 0;
+		nb_fifo_overflows++;
+
+		gap_log(LOG_ERROR, "FIFO overflow %d/5", nb_fifo_overflows);
+		// Reset FIFO
+		mem_write(MPU6050_USER_CTRL, 0b00000100);
+
+		if (nb_fifo_overflows >= 5) {
+			nb_fifo_overflows = 0;
+			MPU6050_Disable();
+			gap_log(LOG_ERROR,
+					"Disabling MPU6050, 5 FIFO overflow detected");
+		}
+	}
+}
+
 HAL_StatusTypeDef MPU6050_Disable() {
 	gyro_enable = false;
 	HAL_StatusTypeDef status = HAL_OK;
 
 	// Disable and reset FIFO
-	status |= mem_write(MPU6050_USER_CTRL, 0b00000100);
+	status |= mem_write(MPU6050_USER_CTRL, 0b01000100);
 
 	// Reset device and sleep
 	status |= mem_write(MPU6050_PWR_MGMT_1, 0b11000000);

@@ -18,6 +18,8 @@ extern I2C_HandleTypeDef hi2c1;
 #define MPU6050_GYRO_CONFIG 0x1B
 #define MPU6050_FIFO_EN 0x23
 #define MPU6050_I2C_MST_CTRL 0x24
+#define MPU6050_INT_ENABLE 0x38
+#define MPU6050_INT_STATUS 0x3A
 #define MPU6050_USER_CTRL 0x6A
 #define MPU6050_PWR_MGMT_1 0x6B
 #define MPU6050_FIFO_COUNT_H 0x72
@@ -41,6 +43,11 @@ HAL_StatusTypeDef MPU6050_Init();
  * @return HAL_OK if data have been successfully filled, otherwise status != HAL_OK
  */
 HAL_StatusTypeDef MPU6050_GetData(GyroData *data);
+
+/**
+ * @brief Handle FIFO overflow interrupt
+ */
+void MPU6050_Handle_FIFO_Overflow();
 
 /**
  * @brief Disable the MPU 6050 gyroscope sensor
