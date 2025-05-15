@@ -16,23 +16,32 @@ Pins à connecter:
 Paliers réalisés:
     - 0 - Mise en place de l'environnement
     - 1 - Console de contrôle
-Utilisation de l'UART 7 en mode interruption. Lecture du given code et plus particulièrement du README.md
-afin de comprendre les étapes nécessaires à la communication avec gapcli. Nous lisons le message envoyé par gapcli
-en 2 temps: lecture du header, extraction de la taille du "body" puis lecture du buffer + footer. Ensuite,
-gapcom_accept se charge du parsing et de l'appel au callback.
+Utilisation de l'UART 7 en mode interruption. Lecture du given code et plus
+particulièrement du README.md afin de comprendre les étapes nécessaires à la
+communication avec gapcli. Nous lisons le message envoyé par gapcli en 2 temps:
+lecture du header, extraction de la taille du "body" puis lecture du buffer +
+footer. Ensuite, gapcom_accept se charge du parsing et de l'appel au callback.
     - 2 - Logs par UART (logger.c)
-Pour les logs nous sommes passé par l'usart1 en mode polling pour ne pas interférer avec l'uart7 utilisé pour la communication avec gapcli.
-Nous avons implémenté une fonction de log qui prend le même format que printf pour rendre le système de log le plus générique possible.
+Pour les logs nous sommes passé par l'usart1 en mode polling pour ne pas
+interférer avec l'uart7 utilisé pour la communication avec gapcli. Nous avons
+implémenté une fonction de log qui prend le même format que printf pour rendre
+le système de log le plus générique possible.
     - 3 - Support du gyroscope (mpu6050.c)
-Driver écrit dans le fichier "mpu6050.c". Difficulté à choisir quels sont les bons registres à modifier
-(ex: il y a DPLF, est-ce bien de l'activer ?) ou bien à interpréter les valeurs renvoyées par le gyroscope.
+Driver écrit dans le fichier "mpu6050.c". Difficulté à choisir quels sont les
+bons registres à modifier (ex: il y a DPLF, est-ce bien de l'activer ?) ou bien
+à interpréter les valeurs renvoyées par le gyroscope.
     - A - Stockage de la version logicielle (version.c)
-Pour stocker la version logicielle nous avons utilisé le sector 11 qui est assez bas dans les addresses pour normalement de pas contenir
-le code de l'application et donc on ne risque pas de l'écraser (il faut quand même faire attention si l'application est trop grosse en mémoire).
+Pour stocker la version logicielle nous avons utilisé le sector 11 qui est
+assez bas dans les addresses pour normalement de pas contenir le code de
+l'application et donc on ne risque pas de l'écraser (il faut quand même faire
+attention si l'application est trop grosse en mémoire).
     - B - Mr Propre
-Nous avons utilisé les flags de compilation et cppcheck pour rendre propre notre code et enlever tous les warnings.
+Nous avons utilisé les flags de compilation et cppcheck pour rendre propre notre
+code et enlever tous les warnings.
     - D - Le seau déborde (mpu6050.c)
-
+Activation de l'interruption FIFO Overflow sur le MPU et réception de celle-ci
+sur la STM32, désactivation du MPU au bout de 5 overflow, reset de la FIFO à
+chaque overflow.
 
 Paliers non réalisés:
     - C - Auto-test
